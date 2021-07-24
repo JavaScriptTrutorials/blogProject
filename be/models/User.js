@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        uniquie: true
+        unique: true
     },
     password: {
         type: String,
@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
         minlength: 5
     },
     role: Number,
+    nickname: String,
     comments: [
         {
             type: mongoose.Schema.Types.ObjectId,

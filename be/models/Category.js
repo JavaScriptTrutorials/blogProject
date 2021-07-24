@@ -5,6 +5,12 @@ const categorySchema = mongoose.Schema({
         type: String,
         required: true
     },
+    path: [
+        {
+            type: String,
+            
+        }
+    ],
     creater: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
