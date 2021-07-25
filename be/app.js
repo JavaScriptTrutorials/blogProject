@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const User = require('./models/User');
 const config = require('./config');
+
+const authRouter = require('./routes/authRoutes');
 
 const app = express();
 
@@ -27,6 +30,8 @@ db.once('open', function() {
 app.get('/', (req, res) => {
   res.json({test: 'this is test'});
 });
+
+app.use(authRouter);
 
 app.get('/register', (req, res) => {
   const user = new User({
