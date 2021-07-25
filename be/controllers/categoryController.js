@@ -1,6 +1,25 @@
 const Category = require("../models/Category");
 const mongoose = require('mongoose');
 
+module.exports.category_get_all = async(req, res) => {
+    console.log("som tu");
+    try{
+        const categories = await Category.find().populate({
+            path: 'creator',
+            model: 'user'
+        }).populate({
+            path: 'subcategories',
+            model: 'category'
+        });
+
+        res.status(201).json({categories});
+
+    } catch(err){
+        console.log(err);
+        res.status(400).json(err);
+    }
+};
+
 module.exports.create_post = async(req, res) => {
     const {name, parentCategory} = req.body;
     const userId = res.locals.userId;
@@ -21,8 +40,7 @@ module.exports.create_post = async(req, res) => {
             parentObject = mongoose.Types.ObjectId(parentCategory);
             category.parentCategory = parentObject;
 
-            let res = await Category.findByIdAndUpdate(parentCategory, {$push: {"subcategories": category._id}}, {useFindAndModify: false});
-            console.log("********",res);
+            await Category.findByIdAndUpdate(parentCategory, {$push: {"subcategories": category._id}}, {useFindAndModify: false});
         }
         await category.save();
         
@@ -31,4 +49,4 @@ module.exports.create_post = async(req, res) => {
     } catch(err){
         res.status(400).json(err);
     }
-}
+};
