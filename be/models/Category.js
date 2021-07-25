@@ -5,16 +5,15 @@ const categorySchema = mongoose.Schema({
         type: String,
         required: true
     },
-    path: [
-        {
-            type: String,
-            
-        }
-    ],
-    creater: {
+    creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
         required: true
+    },
+    parentCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        default: null
     },
     subcategories: [
         {
@@ -27,7 +26,11 @@ const categorySchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post' 
         }
-    ]
+    ],
+    status: {
+        type: Boolean,
+        default: true,
+    }
 },
 {
     timestamps: true

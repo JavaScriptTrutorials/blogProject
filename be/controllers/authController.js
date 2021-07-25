@@ -33,18 +33,26 @@ const handleErrors = (err) => {
 // create token
 const maxAge = 3 * 24 * 60 * 60; // 3 days in seconds, cookies in miliseconds
 
-const createToken = (id) => {
-    return jwt.sign({id}, jwtSecret, {
+const createToken = (id, role) => {
+    return jwt.sign({id, role}, jwtSecret, {
         expiresIn: maxAge
     });
 };
 
 module.exports.signup_post = async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password, role} = req.body;
     try{
-        const user = await User.create({email, password});
-        const token = createToken(user._id);
+        const user = await User.create({email, password, role});
+        const token = createToken(user._id, user.role);
         //res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000});
+        jwt.verify(token, jwtSecret, (err, decodedToken) => {
+            if(err){
+                console.log(err.message);
+            }
+            else{
+                console.log("register", decodedToken);
+            }
+        });
         res.status(201).json({user: user, token});
     }
     catch(err){
@@ -57,7 +65,7 @@ module.exports.login_post = async (req, res) => {
 
     try{
         const user = await User.login(email, password);
-        const token = createToken(user._id);
+        const token = createToken(user._id, user.role);
         //res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000});
         
         res.status(200).json({user: user, token});
