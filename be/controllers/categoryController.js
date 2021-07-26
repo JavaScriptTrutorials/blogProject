@@ -20,6 +20,7 @@ module.exports.category_delete = async(req, res) => {
         if(data.parentCategory !== null){
             await Category.findByIdAndUpdate(data.parentCategory , {$pull: {"subcategories": data._id}}, {useFindAndModify: false});
         }
+        // todo also delete subcategories, posts & comments
         res.json(data);
     } catch(err) {
         console.log(err);
@@ -58,7 +59,7 @@ module.exports.category_get_all = async(req, res) => {
 
 module.exports.create_post = async(req, res) => {
     const {name, parentCategory} = req.body;
-    const userId = res.locals.user.userId;
+    const userId = res.locals.user.id;
 
     console.log(userId);
     console.log(mongoose.Types.ObjectId(userId));
@@ -67,7 +68,7 @@ module.exports.create_post = async(req, res) => {
 
         const category = new Category({
             name,
-            creator: mongoose.Types.ObjectId(userId),
+            creator: userId,
         });
 
         console.log('$$$$', parentCategory);

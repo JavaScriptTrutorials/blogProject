@@ -9,7 +9,7 @@ const postSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    creater: {
+    creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
         required: true
@@ -25,6 +25,11 @@ const postSchema = mongoose.Schema({
     status: {
         type: Boolean,
         default: true,
+    },
+    categoryParent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Category',
+        required: true
     },
     comments: [
         {

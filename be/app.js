@@ -6,6 +6,7 @@ const config = require('./config');
 
 const authRouter = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const postRoutes = require('./routes/postRoutes');
 const checkAuth = require('./middlewares/checkAuth.middleware');
 const getToken = require('./middlewares/getToken.middleware');
 
@@ -42,6 +43,7 @@ app.get('/', checkAuth, (req, res) => {
 
 app.use(authRouter);
 app.use('/category', categoryRoutes);
+app.use('/post', postRoutes);
 
 
 
