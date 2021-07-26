@@ -5,9 +5,14 @@ const commentSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    creater: {
+    creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
+        required: true
+    },
+    forPost:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Post',
         required: true
     },
     subcategories: [
@@ -17,6 +22,10 @@ const commentSchema = mongoose.Schema({
         }
     ],
     votes: Number,
+    commentParent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    },
     subcomments: [
         {
             type: mongoose.Schema.Types.ObjectId,
