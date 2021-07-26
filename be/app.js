@@ -6,6 +6,8 @@ const config = require('./config');
 
 const authRouter = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const checkAuth = require('./middlewares/checkAuth.middleware');
+const getToken = require('./middlewares/getToken.middleware');
 
 const app = express();
 
@@ -13,14 +15,7 @@ const app = express();
 app.use(express.json());
 
 // getting token from header
-app.use(function (req, res, next) {
-  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-    res.locals.token = req.headers.authorization.split(' ')[1];
-  } else {
-    res.locals.token = null;
-  }
-  next()
-});
+app.use(getToken);
 
 // listen for requests
 // connect to mongodb
@@ -36,37 +31,17 @@ db.once('open', function() {
   });
 });
 
-const requireAuth = (req, res, next) => {
-  const token = res.locals.token;
-  // check json web token exists and verified
-  if(token){
-      jwt.verify(token, config.jwtSecret, (err, decodedToken) => {
-          if(err){
-              console.log(err.message);
-              next(err);
-          }
-          else{
-              console.log("###", decodedToken);
-              res.locals.userId = decodedToken.id;
-              res.locals.role = decodedToken.role;
-              next();
-          }
-      });
-  }
-  else {
-      res.redirect('/login');
-  }
-}
 
 
 
 
-app.get('/', requireAuth, (req, res) => {
+
+app.get('/', checkAuth, (req, res) => {
   res.json({test: 'this is test', userId: res.locals.userId});
 });
 
 app.use(authRouter);
-app.use('/category', requireAuth, categoryRoutes);
+app.use('/category', categoryRoutes);
 
 
 

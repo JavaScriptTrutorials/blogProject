@@ -1,8 +1,44 @@
 const Category = require("../models/Category");
 const mongoose = require('mongoose');
 
+module.exports.category_update = async(req, res) => {
+    const id = req.params.id;
+    try{
+        const data = await Category.findByIdAndUpdate(id, req.body, {useFindAndModify: false});
+        res.json(data);
+    } catch(err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
+}
+
+module.exports.category_delete = async(req, res) => {
+    const id = req.params.id;
+    try{
+        const data = await Category.findByIdAndDelete(id);
+        // remove category from parent array of childrens
+        if(data.parentCategory !== null){
+            await Category.findByIdAndUpdate(data.parentCategory , {$pull: {"subcategories": data._id}}, {useFindAndModify: false});
+        }
+        res.json(data);
+    } catch(err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
+}
+
+module.exports.get_categoryBiId = async(req, res) => {
+    const id = req.params.id;
+    try{
+        const data = await Category.findById(id);
+        res.json({data});
+    } catch(err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
+};
+
 module.exports.category_get_all = async(req, res) => {
-    console.log("som tu");
     try{
         const categories = await Category.find().populate({
             path: 'creator',
@@ -22,7 +58,7 @@ module.exports.category_get_all = async(req, res) => {
 
 module.exports.create_post = async(req, res) => {
     const {name, parentCategory} = req.body;
-    const userId = res.locals.userId;
+    const userId = res.locals.user.userId;
 
     console.log(userId);
     console.log(mongoose.Types.ObjectId(userId));
