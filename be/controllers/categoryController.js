@@ -1,6 +1,5 @@
 const Category = require("../models/Category");
-const Post = require("../models/Post");
-const {deleteAllComments} = require("./postController");
+const {deleteAllPosts} = require("./postController");
 const mongoose = require('mongoose');
 
 module.exports.category_update = async(req, res) => {
@@ -17,11 +16,7 @@ module.exports.category_update = async(req, res) => {
 const deleteSubcategories = async category => {
     console.log(category);
     // removing post of the category
-    category.posts.forEach(async post => {
-        const removedPost = await Post.findByIdAndDelete(post);
-        console.log(deleteAllComments);
-        deleteAllComments(removedPost.comments);
-    });
+    deleteAllPosts(category.posts);
     // removing subcategories
     while(category.subcategories.length !== 0){
         const subcategory = await(Category.findByIdAndDelete(category.subcategories.pop()));

@@ -13,21 +13,26 @@ module.exports.comment_update = async(req, res) => {
     }
 }
 
-const deletecoments = async comment => {
+const deleteSubcomments = async comment => {
     console.log(comment);
     while(comment.subcomments.length !== 0){
         const subcomment = await(Comment.findByIdAndDelete(comment.subcomments.pop()));
-        deletecoments(subcomment);
+        deleteSubcomments(subcomment);
     }
 };
 
-module.exports.deletecomments = deletecoments;
+module.exports.deleteAllComments = (comments => {
+    comments.forEach(async comment => {
+        const remCom = await Comment.findByIdAndDelete(comment);
+        deleteSubcomments(remCom);
+    });
+});
 
 module.exports.comment_delete = async(req, res) => {
     const id = req.params.id;
     try{
         const data = await Comment.findByIdAndDelete(id);
-        deletecoments(data)
+        deleteSubcomments(data)
             .then(() => {
                 res.json({status: "successfully deleted"}); 
             })
