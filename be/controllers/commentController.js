@@ -21,17 +21,24 @@ const deletecoments = async comment => {
     }
 };
 
+module.exports.deletecomments = deletecoments;
+
 module.exports.comment_delete = async(req, res) => {
     const id = req.params.id;
     try{
         const data = await Comment.findByIdAndDelete(id);
         deletecoments(data)
-            .then(data => {
-                res.json({status: "successfully deleted"});
+            .then(() => {
+                res.json({status: "successfully deleted"}); 
             })
             .catch(err => {
                 res.status(400).json(err);
             });
+        if(!(data.commentParent === null || data.commentParent === undefined)){
+            await Comment.findByIdAndUpdate(data.commentParent, {$pull: {"subcomments": data._id}}, {useFindAndModify: false});
+        } else {
+            await Post.findByIdAndUpdate(data.forPost, {$pull: {"comments": data._id}}, {useFindAndModify: false});
+        }
     } catch(err) {
         console.log(err);
         res.status(400).json(err);
