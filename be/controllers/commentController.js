@@ -13,17 +13,25 @@ module.exports.comment_update = async(req, res) => {
     }
 }
 
+const deletecoments = async comment => {
+    console.log(comment);
+    while(comment.subcomments.length !== 0){
+        const subcomment = await(Comment.findByIdAndDelete(comment.subcomments.pop()));
+        deletecoments(subcomment);
+    }
+};
+
 module.exports.comment_delete = async(req, res) => {
     const id = req.params.id;
     try{
         const data = await Comment.findByIdAndDelete(id);
-        if(data.commentParent === null || data.commentParent === undefined){
-            await Post.findByIdAndUpdate(data.forPost, {$pull: {"comments": data._id}}, {useFindAndModify: false});
-        } else {
-            await Comment.findByIdAndUpdate(data.commentParent, {$pull: {"subcomments": data._id}}, {useFindAndModify: false});
-        }
-        // todo delete nested comments
-        res.json(data);
+        deletecoments(data)
+            .then(data => {
+                res.json({status: "successfully deleted"});
+            })
+            .catch(err => {
+                res.status(400).json(err);
+            });
     } catch(err) {
         console.log(err);
         res.status(400).json(err);
