@@ -1,4 +1,6 @@
 const Category = require("../models/Category");
+const Post = require("../models/Post");
+const {deleteAllComments} = require("./postController");
 const mongoose = require('mongoose');
 
 module.exports.category_update = async(req, res) => {
@@ -12,6 +14,22 @@ module.exports.category_update = async(req, res) => {
     }
 }
 
+const deleteSubcategories = async category => {
+    console.log(category);
+    // removing post of the category
+    category.posts.forEach(async post => {
+        const removedPost = await Post.findByIdAndDelete(post);
+        console.log(deleteAllComments);
+        deleteAllComments(removedPost.comments);
+    });
+    // removing subcategories
+    while(category.subcategories.length !== 0){
+        const subcategory = await(Category.findByIdAndDelete(category.subcategories.pop()));
+
+        deleteSubcategories(subcategory);
+    }
+};
+
 module.exports.category_delete = async(req, res) => {
     const id = req.params.id;
     try{
@@ -21,6 +39,8 @@ module.exports.category_delete = async(req, res) => {
             await Category.findByIdAndUpdate(data.parentCategory , {$pull: {"subcategories": data._id}}, {useFindAndModify: false});
         }
         // todo also delete subcategories, posts & comments
+        deleteSubcategories(data);
+
         res.json(data);
     } catch(err) {
         console.log(err);
@@ -41,13 +61,13 @@ module.exports.get_categoryBiId = async(req, res) => {
 
 module.exports.category_get_all = async(req, res) => {
     try{
-        const categories = await Category.find().populate({
+        const categories = await Category.find();/*.populate({
             path: 'creator',
             model: 'user'
         }).populate({
             path: 'subcategories',
             model: 'category'
-        });
+        });*/
 
         res.status(201).json({categories});
 

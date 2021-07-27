@@ -21,6 +21,8 @@ const deleteAllComents = (comments => {
     });
 });
 
+module.exports.deleteAllComments = deleteAllComents;
+
 module.exports.post_delete = async(req, res) => {
     const id = req.params.id;
     try{
@@ -29,7 +31,7 @@ module.exports.post_delete = async(req, res) => {
         deleteAllComents(data.comments);
         // remove post from category posts array
         await Category.findByIdAndUpdate(data.categoryParent , {$pull: {"posts": data._id}}, {useFindAndModify: false});
-        // todo also delete comments
+
         res.json(data);
     } catch(err) {
         console.log(err);
