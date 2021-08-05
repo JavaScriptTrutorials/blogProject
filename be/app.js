@@ -12,10 +12,17 @@ const commentRouter = require('./routes/commentRoutes');
 const checkAuth = require('./middlewares/checkAuth.middleware');
 const getToken = require('./middlewares/getToken.middleware');
 
+const cors = require('cors');
+const morgan = require('morgan');
+
 const app = express();
 
 // middleware
 app.use(express.json());
+app.use(cors({
+  origin: '*'
+}));
+app.use(morgan('dev'));
 
 // getting token from header
 app.use(getToken);

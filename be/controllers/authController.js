@@ -33,17 +33,17 @@ const handleErrors = (err) => {
 // create token
 const maxAge = 3 * 24 * 60 * 60; // 3 days in seconds, cookies in miliseconds
 
-const createToken = (id, role) => {
-    return jwt.sign({id, role}, jwtSecret, {
+const createToken = (id, email, role) => {
+    return jwt.sign({id, email, role}, jwtSecret, {
         expiresIn: maxAge
     });
 };
 
 module.exports.signup_post = async (req, res) => {
-    const {email, password, role} = req.body;
     try{
-        const user = await User.create({email, password, role});
-        const token = createToken(user._id, user.role);
+        const user = await User.create({...req.body});
+        console.log(user);
+        const token = createToken(user._id, user.email, user.role);
         //res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000});
         jwt.verify(token, jwtSecret, (err, decodedToken) => {
             if(err){
@@ -53,9 +53,17 @@ module.exports.signup_post = async (req, res) => {
                 console.log("register", decodedToken);
             }
         });
-        res.status(201).json({user: user, token});
+        const loggedUser = {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+            nickname: user.nickname,
+            token: token
+        };
+        res.status(201).json({token});
     }
     catch(err){
+        console.log(err.message);
         const errors = handleErrors(err);
         res.status(400).json({errors});
     } 
@@ -65,10 +73,16 @@ module.exports.login_post = async (req, res) => {
 
     try{
         const user = await User.login(email, password);
-        const token = createToken(user._id, user.role);
+        const token = createToken(user._id, user.email, user.role);
         //res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000});
-        
-        res.status(200).json({user: user, token});
+        const loggedUser = {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+            nickname: user.nickname,
+            token: token
+        };
+        res.status(200).json({token});
     }
     catch(err){
         const errors = handleErrors(err);
