@@ -16,7 +16,6 @@ const SignUp = (props) => {
         if(props.user.isAuthenticated){
             history.push('/');
         }
-        console.log(props.user);
     },[props.user, history]);
 
     const handleSubmit = e => {

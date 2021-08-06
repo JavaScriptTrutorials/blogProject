@@ -7,8 +7,11 @@ import {
     FETCH_USER_LOGIN_FAILURE,
     FETCH_USER_LOGOUT
 } from "./userTypes";
-import { apiURL } from "../../config";
 import jwt from 'jsonwebtoken';
+
+import {
+    apiLinkRoot, apiLinkPathEntrance, httpRequestJson
+} from '../../utils/fetch.utils';
 
 // Actions for registration
 export const fetchUserRegisterRequest = () => {
@@ -34,13 +37,9 @@ export const fetchUserRegistration = credentials => {
     let statusOk;
     return dispatch => {
         dispatch(fetchUserRegisterRequest());
-        console.log(`${apiURL}/signup`, credentials);
+        console.log(`${apiLinkRoot}${apiLinkPathEntrance.signup}`, credentials);
 
-        fetch(`${apiURL}/signup`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(credentials)
-        })
+        fetch(`${apiLinkRoot}${apiLinkPathEntrance.signup}`, httpRequestJson.post(credentials))
         .then(response => {
             console.log(response);
             statusOk = response.ok;
@@ -85,13 +84,8 @@ export const fetchUserLogin = credentials => {
     let statusOk;
     return dispatch => {
         dispatch(fetchUserLoginRequest());
-        console.log(`${apiURL}/signup`, credentials);
 
-        fetch(`${apiURL}/login`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(credentials)
-        })
+        fetch(`${apiLinkRoot}${apiLinkPathEntrance.login}`, httpRequestJson.post(credentials))
         .then(response => {
             console.log(response);
             statusOk = response.ok;
