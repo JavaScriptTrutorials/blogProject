@@ -4,7 +4,9 @@ import {
     FETCH_CREATE_CATEGORY_FAILURE,
     FETCH_GET_CATEGORIES_REQUEST,
     FETCH_GET_CATEGORIES_SUCCESS,
-    FETCH_GET_CATEGORIES_FAILURE
+    FETCH_GET_CATEGORIES_FAILURE,
+    ADD_EXPANDED_CATEGORIES,
+    REMOVE_EXPANDED_CATEGORIES
 } from './categoryTypes';
 
 import {
@@ -89,9 +91,23 @@ export const fetchGetCategories = category => {
             if(statusOk){
                 dispatch(fetchGetCategoriesSuccess(data));
             } else {
-                dispatch(fetchGetCategoriesFailure(data));
+                dispatch(fetchGetCategoriesFailure(data.message));
             }
         })
         .catch(err => dispatch(fetchGetCategoriesFailure(err.message)));
+    };
+};
+
+export const addExpandedCategories = (category) => {
+    return {
+        type: ADD_EXPANDED_CATEGORIES,
+        payload: category
+    };
+};
+
+export const removeExpandedCategories = (category) => {
+    return {
+        type: REMOVE_EXPANDED_CATEGORIES,
+        payload: category
     };
 };

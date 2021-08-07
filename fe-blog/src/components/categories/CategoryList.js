@@ -1,12 +1,12 @@
-const CategoryList = ({categories}) => {
+import Category from './Category';
+const CategoryList = (props) => {
+    const {categories} = props;
     return (
-        <div>
+        <div className={props.className}  /*style={{paddingLeft: '20px'}}*/>
         {categories.map(category => {
             return (
                 <div key={category._id}>
-                    <h3>{category.name}</h3>
-                    <p>Number of posts: {category.posts.length}</p>
-                    <p>Created: {category.createdAt}</p>
+                    <Category category={category}/>
                 </div>
             )
         })}

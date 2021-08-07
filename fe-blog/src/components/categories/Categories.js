@@ -16,8 +16,9 @@ const Categories = ({category, get, categories, categoriesById}) => {
             <h2>Categories</h2>
             {category.error !== ''? <p>{category.error}</p> : category.loading? <p>Loading...</p>:
             <div>
-                <CategoryList categories={categoriesById}/>
-            </div>}
+            <CategoryList categories={categoriesById}/>
+            <br />
+            <CategoryList categories={categoriesById}/></div>}
             <CreateCategory/>
         </div>
     );

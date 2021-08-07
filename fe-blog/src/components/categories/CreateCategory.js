@@ -9,12 +9,28 @@ const CreateCategory = props => {
     const handleSubmit = e => {
         e.preventDefault();
         console.log('new category', name);
-        props.create({name});
+        if(props.parentCategory){
+            props.create({name, parentCategory: props.parentCategory});
+        } else {
+            props.create({name});
+        }
+        
+
+    }
+
+    const handleClose = (e) => {
+        console.log(e.target.tagName);
+        if(e.target.className.includes('modal') || e.target.tagName==='SPAN'){
+            props.displayToggle(false);
+        }
     }
 
     return (
-        <div>
+        <div className={`${props.className} modal` } onClick={(e) => handleClose(e)}>
+            <div className='modal-content'>
+            <span className="close" onClick={(e) => handleClose(e)}>&times;</span>
             {props.category.loading && <p>Creating...</p>}
+            {props.category.createError !== "" && <p>{props.category.createError}</p>}
             <form onSubmit={e => handleSubmit(e)}>
                 <div>
                     <label htmlFor="name">Category name</label>
@@ -24,6 +40,7 @@ const CreateCategory = props => {
                     <button>Create new category</button>
                 </div>
             </form>
+            </div>
         </div>
     );
 };

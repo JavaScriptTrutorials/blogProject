@@ -1,10 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { Ul, Li,NavLinkS } from "./Navbar.style";
 const SignedOutLinks = (props) => {
     return (
-        <ul className="right">
-            <li><NavLink to='/register'>Signup</NavLink></li>
-            <li><NavLink to='/login'>Login</NavLink></li>
-        </ul>
+        <Ul className="right">
+            <Li><NavLinkS to='/register'>Signup</NavLinkS></Li>
+            <Li><NavLinkS to='/login'>Login</NavLinkS></Li>
+        </Ul>
     )
 };
 export default SignedOutLinks;

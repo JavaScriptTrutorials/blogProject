@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 const Navbar = (props) => {
     return (
-        <nav className="nav-wrapper grey darken-3">
+        <nav className={props.className}>
             <div className="container">
                 <Link to='/' className='brand-logo'>PlanApp</Link>
                 {props.user.isAuthenticated ? <SignedInLinks email={props.user.data.email}/> : <SignedOutLinks/>}
