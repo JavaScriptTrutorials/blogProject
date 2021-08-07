@@ -4,8 +4,8 @@ import { fetchGetCategories } from "../../redux/category/categoryActions";
 import {CreateCategoryModal} from '../categories/StyledCategoryList';
 import {connect} from 'react-redux';
 import { useEffect, useState } from "react";
-import CategoryList from "../categories/CategoryList";
-//import { CategoryListStyle } from "../categories/CategoryListStyle";
+//import CategoryList from "../categories/CategoryList";
+import { CategoryListStyle } from "../categories/CategoryListStyle";
 import { categoriesSelector, subcategoriesSelector, errorSelector } from "../../redux/category/categorySelectors";
 
 
@@ -26,7 +26,7 @@ const MainPageComponent = (props) => {
             <h2>Categories</h2>
             <button onClick={() => setToggle(!toggle)}>Add new category</button>
             {props.error !== ''? <p>{props.error}</p> : category.loading? <p>Loading...</p>:
-                <CategoryList categories={categoriesById}/>
+                <CategoryListStyle categories={categoriesById}/>
             }
             </Menu>
             <MainContent className='main'>

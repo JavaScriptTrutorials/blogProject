@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {CreateCategoryModal} from './StyledCategoryList';
-//import { CategoryListStyle } from './CategoryListStyle';
-import CategoryList from './CategoryList';
+import { CategoryListStyle } from './CategoryListStyle';
+//import CategoryList from './CategoryList';
 import {connect} from 'react-redux';
 import { subcategoriesSelector, isExpandedSelector} from "../../redux/category/categorySelectors";
 import { removeExpandedCategories, addExpandedCategories } from '../../redux/category/categoryActions';
@@ -44,7 +44,7 @@ const Category = props => {
             <span>{props.category.name}</span>
             <span className="material-icons" onClick={handleAdd}>add</span>
 
-            {toggle && <CategoryList categories={props.categoriesById} style={{marginLeft: '10px'}}/>}
+            {toggle && <CategoryListStyle categories={props.categoriesById}/>}
         </div>
     );
 };
