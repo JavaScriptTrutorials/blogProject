@@ -9,42 +9,52 @@ import { removeExpandedCategories, addExpandedCategories } from '../../redux/cat
 const Category = props => {
 
     const [toggle, setToggle] = useState(false);
-    const [toggleCreate, setToggleCreate] = useState(false);
 
     useEffect(() => {
         if(props.isExpanded){
             setToggle(true);
         }
-    }, [])
-
-    const handleAdd = () => {
+    }, [props.isExpanded]);
+/*
+    const handleAdd = (e) => {
         setToggleCreate(true);
+        setContextMenu(false);
+        e.stopPropagation();
     }
-
-    const handleExpandMore = () => {
+*/
+    const handleExpandMore = (e) => {
         props.add(props.category._id);
         setToggle(!toggle);
+        e.stopPropagation();
     };
 
-    const handleExpandLess = () => {
+    const handleExpandLess = (e) => {
         props.remove(props.category._id);
         setToggle(!toggle);
+        e.stopPropagation();
     };
 
+    const handleClick= (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'click') {
+          console.log('Left click');
+        } else if (e.type === 'contextmenu') {
+          console.log('Right click');
+          props.openSideMenu(props.category._id, e.pageX, e.pageY);
+        }
+      }
+
     return (
-        <div>
+        <div onClick={(e) => handleClick(e)} onContextMenu={e => handleClick(e)}>
+            
             {toggle?
-                <span onClick={handleExpandLess} className="material-icons">expand_less</span>:
-                <span onClick={handleExpandMore} className="material-icons">expand_more</span>
-            }
-            {toggleCreate?
-                <CreateCategoryModal display='block' displayToggle={setToggleCreate} parentCategory={props.category._id}/>:
-                <CreateCategoryModal displayToggle={setToggleCreate} parentCategory={props.category._id}/>
+                <span onClick={e => handleExpandLess(e)} className="material-icons">expand_less</span>:
+                <span onClick={e => handleExpandMore(e)} className="material-icons">expand_more</span>
             }
             <span>{props.category.name}</span>
-            <span className="material-icons" onClick={handleAdd}>add</span>
 
-            {toggle && <CategoryListStyle categories={props.categoriesById}/>}
+            {toggle && <CategoryListStyle categories={props.categoriesById} openSideMenu={props.openSideMenu}/>}
         </div>
     );
 };

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import SideMenu from './SideMenu';
 
 export const MainPage = styled.div`
     background-color: coral;
@@ -8,7 +9,7 @@ export const MainPage = styled.div`
         overflow: hidden;
     }
 `;
-export const Menu = styled.div`
+export const Menu = styled(SideMenu)`
     float: left;
     width: 15%;
     background-color: #eee;
